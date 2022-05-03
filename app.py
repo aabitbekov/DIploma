@@ -1,7 +1,7 @@
 import streamlit as st
 import streamlit_authenticator as stauth
 from multiapp import MultiApp
-from apps import main
+from apps import main, treetask, fours
 from PIL import Image
 
 st.set_page_config(
@@ -49,6 +49,8 @@ if st.session_state['authentication_status']:
     authenticator.logout('Logout', 'main')
     # Add all your application here
     app.add_app("Посчитать коэффициенты прямых материальных затрат.", main.app)
+    app.add_app("Рассчитать коэффициенты прямых и полных затрат труда и фондов и плановую потребность в соответствующих ресурсах.", treetask.app)
+    app.add_app("Проследить эффект матричного мультипликатора при дополнительном увеличении конечного продукта по какой-либо отрасли на X %.", fours.app)
     app.run()
 elif st.session_state['authentication_status' ] == False:
     st.error('Неверное имя пользователя/пароль')
