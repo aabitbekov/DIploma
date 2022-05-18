@@ -1,16 +1,14 @@
 import os
-
 import numpy
 import numpy as np
 import openpyxl
 from pathlib import Path
-
+import pandas
 
 def save_uploadedfile(uploadedfile):
-    with open(os.path.join(uploadedfile.name), "wb") as f:
+    with open(os.path.join("excelFiles/{}".format(uploadedfile.name)), "wb") as f:
         f.write(uploadedfile.getbuffer())
-    return uploadedfile.name
-
+    return "excelFiles/{}".format(uploadedfile.name)
 
 
 def koef_prymyx_zatrat(main_matrix, val_price):
@@ -19,15 +17,15 @@ def koef_prymyx_zatrat(main_matrix, val_price):
     index = 0
     for array in main_matrix:
         for element in array:
-            row_koef_prymyx_zatrat.append(round(element/val_price[index], 4))
+            try:
+                row_koef_prymyx_zatrat.append(round(element/val_price[index], 4))
+            except ZeroDivisionError:
+                return 0
             index += 1
         koef_prymyx_zatrat.append(row_koef_prymyx_zatrat)
         row_koef_prymyx_zatrat = []
         index = 0
     return koef_prymyx_zatrat
-
-
-
 
 
 def readDocument(path):
@@ -80,65 +78,40 @@ def getInverseMatrix(main_matrix):
     return b
 
 
-if __name__ == '__main__':
-    # main_matrix, row_names, itogo_by_col, end_pruducts, val_price, col_names, itogo_by_row, dob_st, val_price_by_raw, trud, fondy \
-    sheet = readDocument('data.xlsx')
-    main_matrix = readMainMatrix(sheet)
-    row_names, itogo_by_col, end_pruducts, val_price = readByRow(sheet)
-    col_names, itogo_by_row, dob_st, val_price_by_raw, trud, fondy = readByCol(sheet)
+def getForWriter(main_matrix, itogo_by_col, end_pruducts, val_price, itogo_by_row, dob_st, val_price_by_raw, trud, fondy, col_names, row_names):
+    i = 0
+    for matrix in main_matrix:
+        matrix.append(itogo_by_col[i])
+        matrix.append(end_pruducts[i])
+        matrix.append(val_price[i])
+        i += 1
+    main_matrix.append(itogo_by_row)
+    main_matrix.append(dob_st)
+    main_matrix.append(val_price_by_raw)
+    main_matrix.append(trud)
+    main_matrix.append(fondy)
+    main_matrix = pandas.DataFrame(main_matrix)
+    main_matrix.columns = col_names
+    main_matrix.index = row_names
+    return main_matrix
 
-    print(list(filter(None, trud)), val_price_by_raw)
+
+def readBigMainMatrix(sheet):
+    main_matrix, raw , end_pruducts = [], [], []
+    for row in sheet.iter_rows(0, sheet.max_row):
+        for index in range(0, sheet.max_column-1):
+             raw.append(row[index].value)
+        main_matrix.append(raw)
+        raw = []
+    raw = 0
+    for row in sheet.iter_rows(0, sheet.max_row):
+        for index in range(sheet.max_column-1, sheet.max_column):
+             raw = (row[index].value)
+        end_pruducts.append(raw)
+        raw = 0
+    return main_matrix, end_pruducts
 
 
-
-
-
-
-
-#
-# def readDocument(path):
-#     xlsx_file = Path(path)
-#     wb_obj = openpyxl.load_workbook(xlsx_file)
-#     sheet = wb_obj.active
-#     main_matrix = []
-#     var_row, total_count , kon_product, val_price = [],[], [], []
-#     outiter, inter = 0, 0
-#     for row in sheet.iter_rows(max_col=sheet.max_column, max_row=sheet.max_row):
-#         if outiter == 0:
-#             pass
-#         else:
-#             inter = 0
-#             for cell in row:
-#                 if inter == 0:
-#                     pass
-#                 else:
-#                     if inter == sheet.max_row - 1:
-#                         total_count.append(cell.value)
-#                         # print(total_count)
-#                     elif inter == sheet.max_row:
-#                         kon_product.append(cell.value)
-#                         # print(kon_product)
-#                     elif inter == sheet.max_row + 1:
-#                         val_price.append(cell.value)
-#                         # print(val_price)
-#                     else:
-#                         var_row.append(cell.value)
-#                 inter += 1
-#         if var_row != []:
-#             main_matrix.append(var_row)
-#             var_row = []
-#         outiter += 1
-#
-#     # print(main_matrix)
-#     col_names = []
-#     for column in sheet.iter_cols(1, sheet.max_column):
-#         col_names.append(column[0].value)
-#     # print(col_names)
-#     row_names = []
-#     for row in sheet.iter_rows(1, sheet.max_row):
-#         row_names.append(row[0].value)
-#     # print(row_names)
-#     return main_matrix, col_names, row_names, total_count, kon_product, val_price
 
 
 

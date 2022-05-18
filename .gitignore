@@ -185,3 +185,4 @@ fabric.properties
 # .idea
 .idea
 venv
+apps/__pycache__

@@ -1,4 +1,5 @@
 import numpy as np
+import pandas
 import streamlit as st
 import pandas as pd
 
@@ -19,14 +20,12 @@ def buildMain():
         st.write(main_matrix)
 
         inv_matrix = read.getInverseMatrix(main_matrix)
-        st.write(inv_matrix)
+        st.table(pandas.DataFrame(inv_matrix))
 
         res = np.dot(mat1, inv_matrix)
 
         # print resulted matrix
-        st.write(res)
-        title = st.text_input('Movie title', 'Life of Brian')
-        st.write('The current movie title is', title)
+        st.table(pd.DataFrame(res))
 
 
 

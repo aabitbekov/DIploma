@@ -1,7 +1,9 @@
 import streamlit as st
 import streamlit_authenticator as stauth
+
+import auth.authreader
 from multiapp import MultiApp
-from apps import main, treetask, fours
+from apps import main, trudAndFond, fours, description, balans
 from PIL import Image
 
 st.set_page_config(
@@ -35,8 +37,8 @@ with col3:
 st.markdown("""Межотраслевой баланс представлен в виде системы линейных уравнений. Межотраслевой баланс (МОБ) представляет собой таблицу, в которой отражен процесс формирования и использования совокупного общественного продукта в отраслевом разрезе. Таблица показывает структуру затрат на производство каждого продукта и структуру его распределения в экономике.""")
 
 names = ['User', 'Admin']
-usernames = ['user', 'admin']
-passwords = ['user', 'admin']
+usernames = auth.authreader.getUsername()
+passwords = auth.authreader.getPass()
 
 hashed_passwords = stauth.Hasher(passwords).generate()
 authenticator = stauth.Authenticate(names, usernames, hashed_passwords,
@@ -49,8 +51,9 @@ if st.session_state['authentication_status']:
     authenticator.logout('Logout', 'main')
     # Add all your application here
     app.add_app("Посчитать коэффициенты прямых материальных затрат.", main.app)
-    app.add_app("Рассчитать коэффициенты прямых и полных затрат труда и фондов и плановую потребность в соответствующих ресурсах.", treetask.app)
-    app.add_app("Проследить эффект матричного мультипликатора при дополнительном увеличении конечного продукта по какой-либо отрасли на X %.", fours.app)
+    app.add_app("Рассчитать коэффициенты прямых и полных затрат труда и фондов и плановую потребность в соответствующих ресурсах.", trudAndFond.app)
+    # app.add_app("Проследить эффект матричного мультипликатора при дополнительном увеличении конечного продукта по какой-либо отрасли на X %.", fours.app)
+    app.add_app("Проследить баланс", balans.app)
     app.run()
 elif st.session_state['authentication_status' ] == False:
     st.error('Неверное имя пользователя/пароль')
