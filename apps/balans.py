@@ -65,8 +65,3 @@ def buildMain():
                 st.write("Balans have! URA")
             else:
                 st.write("Balans have't! no URA")
-
-
-
-def app():
-    buildMain()

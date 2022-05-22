@@ -24,7 +24,7 @@ def buildMain():
             st.error('Type error')
         else:
             st.write("""По формуле aij = xij / xj находим коэффициенты прямых затрат: """)
-            print(row_names)
+            # print(row_names)
             st.table(pd.DataFrame(koef_pryamyx_zatrat))
             st.line_chart(pd.DataFrame(koef_pryamyx_zatrat))
 
@@ -61,23 +61,3 @@ def buildMain():
                 file_name='large_df.csv',
                 mime='text/csv',
             )
-
-def app():
-    buildMain()
-
-    # col_names, itogo_by_row, dob_st, val_price_by_raw, trud, fondy = read.readByCol(sheet)
-    # mycsv = pd.DataFrame(read.getForWriter(
-    #     main_matrix, itogo_by_col, end_pruducts, val_price, itogo_by_row, dob_st, val_price_by_raw, trud, fondy, col_names, row_names
-    # ))
-    # mycsv.columns = col_names
-    # mycsv.index = row_names
-    # mycsv = convert_df(mycsv)
-    # print(mycsv)
-    #
-    #
-    # st.download_button(
-    #     label="Download data as CSV",
-    #     data=mycsv,
-    #     file_name='large_df.csv',
-    #     mime='text/csv',
-    # )

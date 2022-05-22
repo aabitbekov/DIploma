@@ -12,9 +12,17 @@ class MultiApp:
             "function": func
         })
 
+    # def run(self):
+    #     app = st.selectbox(
+    #         'Задачи:',
+    #         self.apps,
+    #         format_func=lambda app: app['title'])
+    #     app['function']()
+
     def run(self):
-        app = st.selectbox(
-            'Задачи:',
+        app = st.sidebar.radio(
+            '',
             self.apps,
             format_func=lambda app: app['title'])
+
         app['function']()
